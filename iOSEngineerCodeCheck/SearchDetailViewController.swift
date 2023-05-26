@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// User could check up repo detail information in this page
 class SearchDetailViewController: UIViewController {
     
     @IBOutlet weak var imageView: UIImageView!
@@ -19,29 +20,36 @@ class SearchDetailViewController: UIViewController {
     @IBOutlet weak var openIssuesCountLabel: UILabel!
     
     var searchVC: SearchViewController!
-        
+    var repo: [String:Any]?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let repo = searchVC.searchResult[searchVC.selectedIndex]
+        // Init repo
+        repo = searchVC.searchResult[searchVC.selectedIndex]
+        guard let repo = repo else { return }
         
+        // Setup label
+        titleLabel.text = repo["full_name"] as? String
         languageLabel.text = "Written in \(repo["language"] as? String ?? "")"
         starsCountLabel.text = "\(repo["stargazers_count"] as? Int ?? 0) stars"
         watchersCountLabel.text = "\(repo["wachers_count"] as? Int ?? 0) watchers"
         forksCountLabel.text = "\(repo["forks_count"] as? Int ?? 0) forks"
         openIssuesCountLabel.text = "\(repo["open_issues_count"] as? Int ?? 0) open issues"
+        
+        // Setup imageView
         getImage()
     }
     
     func getImage(){
-        let repo = searchVC.searchResult[searchVC.selectedIndex]
+        guard let repo = repo else { return }
         
-        titleLabel.text = repo["full_name"] as? String
-        
+        // Request image data
         if let owner = repo["owner"] as? [String: Any] {
             if let imgURL = owner["avatar_url"] as? String {
                 URLSession.shared.dataTask(with: URL(string: imgURL)!) { (data, res, err) in
                     let img = UIImage(data: data!)!
+                    // Setup imageView's image in main queue
                     DispatchQueue.main.async {
                         self.imageView.image = img
                     }
