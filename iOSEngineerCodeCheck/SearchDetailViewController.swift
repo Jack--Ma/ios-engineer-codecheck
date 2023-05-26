@@ -11,11 +11,8 @@ import UIKit
 class SearchDetailViewController: UIViewController {
     
     @IBOutlet weak var imageView: UIImageView!
-    
     @IBOutlet weak var titleLabel: UILabel!
-    
     @IBOutlet weak var languageLabel: UILabel!
-    
     @IBOutlet weak var starsCountLabel: UILabel!
     @IBOutlet weak var watchersCountLabel: UILabel!
     @IBOutlet weak var forksCountLabel: UILabel!
@@ -34,11 +31,9 @@ class SearchDetailViewController: UIViewController {
         forksCountLabel.text = "\(repo["forks_count"] as? Int ?? 0) forks"
         openIssuesCountLabel.text = "\(repo["open_issues_count"] as? Int ?? 0) open issues"
         getImage()
-        
     }
     
     func getImage(){
-        
         let repo = searchVC.searchResult[searchVC.selectedIndex]
         
         titleLabel.text = repo["full_name"] as? String
@@ -53,7 +48,6 @@ class SearchDetailViewController: UIViewController {
                 }.resume()
             }
         }
-        
     }
     
 }
