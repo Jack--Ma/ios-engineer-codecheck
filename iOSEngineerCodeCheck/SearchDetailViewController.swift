@@ -19,20 +19,26 @@ class SearchDetailViewController: UIViewController {
     @IBOutlet weak var forksCountLabel: UILabel!
     @IBOutlet weak var openIssuesCountLabel: UILabel!
     
-    var searchVC: SearchViewController!
+    var searchVC: SearchViewController?
     var repo: [String:Any]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Init repo
-        repo = searchVC.searchResult[searchVC.selectedIndex]
+        guard let searchVC = searchVC else { return }
+        guard let selectedIndex = searchVC.selectedIndex else { return }
+        if selectedIndex < 0 || selectedIndex >= searchVC.searchResult.count {
+            return
+        }
+        repo = searchVC.searchResult[selectedIndex]
         guard let repo = repo else { return }
         
         // Setup label
         titleLabel.text = repo["full_name"] as? String
         languageLabel.text = "Written in \(repo["language"] as? String ?? "")"
         starsCountLabel.text = "\(repo["stargazers_count"] as? Int ?? 0) stars"
+        // TODO: key is "watchers" not "wachers_count"
         watchersCountLabel.text = "\(repo["wachers_count"] as? Int ?? 0) watchers"
         forksCountLabel.text = "\(repo["forks_count"] as? Int ?? 0) forks"
         openIssuesCountLabel.text = "\(repo["open_issues_count"] as? Int ?? 0) open issues"
@@ -46,12 +52,18 @@ class SearchDetailViewController: UIViewController {
         
         // Request image data
         if let owner = repo["owner"] as? [String: Any] {
-            if let imgURL = owner["avatar_url"] as? String {
-                URLSession.shared.dataTask(with: URL(string: imgURL)!) { (data, res, err) in
-                    let img = UIImage(data: data!)!
-                    // Setup imageView's image in main queue
-                    DispatchQueue.main.async {
-                        self.imageView.image = img
+            if let imgURLString = owner["avatar_url"] as? String {
+                // Build image URL
+                let imgURL = URL(string: imgURLString)
+                guard let imgURL = imgURL else { return }
+                
+                URLSession.shared.dataTask(with: imgURL) { (data, res, err) in
+                    if let data = data {
+                        let img = UIImage(data: data)
+                        // Setup imageView's image in main queue
+                        DispatchQueue.main.async {
+                            self.imageView.image = img
+                        }
                     }
                 }.resume()
             }

@@ -13,10 +13,10 @@ class SearchViewController: UITableViewController {
 
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var searchWord: String!
+    var searchWord: String?
     var searchTask: URLSessionTask?
     var searchResult: [[String: Any]] = []
-    var selectedIndex: Int!
+    var selectedIndex: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,8 +29,9 @@ class SearchViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "Detail"{
             // Setup search detail vc
-            let searchDetailVC = segue.destination as! SearchDetailViewController
-            searchDetailVC.searchVC = self
+            if let searchDetailVC = segue.destination as? SearchDetailViewController {
+                searchDetailVC.searchVC = self
+            }
         }
     }
 }
@@ -49,13 +50,23 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        // TODO: Add no network toast
         // Begin search request after user click search button
-        searchWord = searchBar.text!
+        searchWord = searchBar.text
+        guard let searchWord = searchWord else {
+            return
+        }
         if searchWord.count != 0 {
-            let searchRequestURLString = "https://api.github.com/search/repositories?q=\(searchWord!)"
-            searchTask = URLSession.shared.dataTask(with: URL(string: searchRequestURLString)!) { (data, res, err) in
+            // Build request URL
+            let searchRequestURLString = "https://api.github.com/search/repositories?q=\(searchWord)"
+            let searchRequestURL = URL(string: searchRequestURLString)
+            guard let searchRequestURL = searchRequestURL else { return }
+            
+            searchTask = URLSession.shared.dataTask(with: searchRequestURL) { (data, res, err) in
                 // From Data to Json Dictionary
-                if let obj = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] {
+                guard let data = data else { return }
+                
+                if let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     if let items = obj["items"] as? [[String: Any]] {
                         self.searchResult = items
                         // Must reload tableView in main queue
@@ -63,6 +74,10 @@ extension SearchViewController: UISearchBarDelegate {
                             self.tableView.reloadData()
                         }
                     }
+                } else {
+                    // TODO: Add error toast
+                    // Monitor parsing error
+                    assert(false, "JSON Serialization Failed!")
                 }
             }
             // Must call task's resume method in order to start request
@@ -81,8 +96,12 @@ extension SearchViewController {
         // Refresh tableView cell
         let cell = UITableViewCell()
         let repo = searchResult[indexPath.row]
-        cell.textLabel?.text = repo["full_name"] as? String ?? ""
-        cell.detailTextLabel?.text = repo["language"] as? String ?? ""
+        if let textLabel = cell.textLabel {
+            textLabel.text = repo["full_name"] as? String ?? ""
+        }
+        if let detailTextLabel = cell.detailTextLabel {
+            detailTextLabel.text = repo["language"] as? String ?? ""
+        }
         cell.tag = indexPath.row
         return cell
     }
