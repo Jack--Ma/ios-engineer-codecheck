@@ -13,11 +13,11 @@ Finish
 
 ## ソースコードの安全性の向上
 
-TBD
+Finish
 
 ## バグを修正
 
-TBD
+Finish
 
 ## Fat VC の回避
 
