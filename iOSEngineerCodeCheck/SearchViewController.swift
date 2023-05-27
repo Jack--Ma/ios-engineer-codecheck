@@ -22,7 +22,7 @@ class SearchViewController: UITableViewController {
         super.viewDidLoad()
         
         // Setup searchBar
-        searchBar.text = "GitHubのリポジトリを検索できるよー"
+        searchBar.placeholder = "GitHubのリポジトリを検索できるよー"
         searchBar.delegate = self
     }
     
@@ -39,14 +39,23 @@ class SearchViewController: UITableViewController {
 // MARK: UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        // Reset search bar when user begin editing
-        searchBar.text = ""
         return true
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        // Cancel request task when user changed search words
+        // Cancel request task when user changed search word
         searchTask?.cancel()
+        // Clear data when search word is empty
+        if searchText.isEmpty {
+            // Avoid repeated reload
+            if self.searchResult.isEmpty {
+                return
+            }
+            self.searchResult = []
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -59,7 +68,10 @@ extension SearchViewController: UISearchBarDelegate {
         if searchWord.count != 0 {
             // Build request URL
             let searchRequestURLString = "https://api.github.com/search/repositories?q=\(searchWord)"
-            let searchRequestURL = URL(string: searchRequestURLString)
+            // Encode url string in case of japanese or chinese
+            let encodingURLString = searchRequestURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+            guard let encodingURLString = encodingURLString else { return }
+            let searchRequestURL = URL(string: encodingURLString)
             guard let searchRequestURL = searchRequestURL else { return }
             
             searchTask = URLSession.shared.dataTask(with: searchRequestURL) { (data, res, err) in

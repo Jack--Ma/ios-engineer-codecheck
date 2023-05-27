@@ -38,8 +38,7 @@ class SearchDetailViewController: UIViewController {
         titleLabel.text = repo["full_name"] as? String
         languageLabel.text = "Written in \(repo["language"] as? String ?? "")"
         starsCountLabel.text = "\(repo["stargazers_count"] as? Int ?? 0) stars"
-        // TODO: key is "watchers" not "wachers_count"
-        watchersCountLabel.text = "\(repo["wachers_count"] as? Int ?? 0) watchers"
+        watchersCountLabel.text = "\(repo["watchers_count"] as? Int ?? 0) watchers"
         forksCountLabel.text = "\(repo["forks_count"] as? Int ?? 0) forks"
         openIssuesCountLabel.text = "\(repo["open_issues_count"] as? Int ?? 0) open issues"
         
