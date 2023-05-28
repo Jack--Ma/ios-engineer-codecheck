@@ -14,9 +14,12 @@ class SearchViewController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     
     var searchWord: String?
-    var searchTask: URLSessionTask?
-    var searchResult: [[String: Any]] = []
+    var listModel: SearchListModel?
     var selectedIndex: Int?
+    
+    lazy var networkManager: SearchNetworkManager = {
+        return SearchNetworkManager()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +33,12 @@ class SearchViewController: UITableViewController {
         if segue.identifier == "Detail"{
             // Setup search detail vc
             if let searchDetailVC = segue.destination as? SearchDetailViewController {
-                searchDetailVC.searchVC = self
+                // Add array out-of-bounds protection
+                guard let repoModels = listModel?.repoModels else { return }
+                if let selectedIndex = selectedIndex, selectedIndex >= 0, selectedIndex < repoModels.count {
+                    let selectedRepoModel = repoModels[selectedIndex]
+                    searchDetailVC.repoModel = selectedRepoModel
+                }
             }
         }
     }
@@ -44,16 +52,15 @@ extension SearchViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         // Cancel request task when user changed search word
-        searchTask?.cancel()
+        networkManager.cancelRequest()
         // Clear data when search word is empty
         if searchText.isEmpty {
             // Avoid repeated reload
-            if self.searchResult.isEmpty {
-                return
-            }
-            self.searchResult = []
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+            if let repoModels = self.listModel?.repoModels, !repoModels.isEmpty {
+                self.listModel = nil
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
         }
     }
@@ -62,38 +69,20 @@ extension SearchViewController: UISearchBarDelegate {
         // TODO: Add no network toast
         // Begin search request after user click search button
         searchWord = searchBar.text
-        guard let searchWord = searchWord else {
-            return
-        }
-        if searchWord.count != 0 {
-            // Build request URL
-            let searchRequestURLString = "https://api.github.com/search/repositories?q=\(searchWord)"
-            // Encode url string in case of japanese or chinese
-            let encodingURLString = searchRequestURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-            guard let encodingURLString = encodingURLString else { return }
-            let searchRequestURL = URL(string: encodingURLString)
-            guard let searchRequestURL = searchRequestURL else { return }
-            
-            searchTask = URLSession.shared.dataTask(with: searchRequestURL) { (data, res, err) in
-                // From Data to Json Dictionary
-                guard let data = data else { return }
-                
-                if let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                    if let items = obj["items"] as? [[String: Any]] {
-                        self.searchResult = items
-                        // Must reload tableView in main queue
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    }
-                } else {
-                    // TODO: Add error toast
-                    // Monitor parsing error
-                    assert(false, "JSON Serialization Failed!")
+        weak var weakSelf = self
+        networkManager.requestSearchList(searchWord) { listModel, error in
+            guard let weakSelf = weakSelf else { return }
+            if let error = error {
+                // TODO: Add error toast
+                // Monitor request error
+                assert(false, "Request search list failed, error: \(error)")
+            } else {
+                weakSelf.listModel = listModel
+                // Must reload tableView in main queue
+                DispatchQueue.main.async {
+                    weakSelf.tableView.reloadData()
                 }
             }
-            // Must call task's resume method in order to start request
-            searchTask?.resume()
         }
     }
 }
@@ -101,18 +90,15 @@ extension SearchViewController: UISearchBarDelegate {
 // MARK: UITableView
 extension SearchViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResult.count
+        return listModel?.repoModels.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Refresh tableView cell
         let cell = UITableViewCell()
-        let repo = searchResult[indexPath.row]
-        if let textLabel = cell.textLabel {
-            textLabel.text = repo["full_name"] as? String ?? ""
-        }
-        if let detailTextLabel = cell.detailTextLabel {
-            detailTextLabel.text = repo["language"] as? String ?? ""
+        if let repoModel = listModel?.repoModels[indexPath.row] {
+            cell.textLabel?.text = repoModel.fullName
+            cell.detailTextLabel?.text = repoModel.language
         }
         cell.tag = indexPath.row
         return cell
