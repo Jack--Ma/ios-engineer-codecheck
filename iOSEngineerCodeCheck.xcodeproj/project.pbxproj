@@ -22,6 +22,7 @@
 		C44511292A232DF400539398 /* SearchNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44511282A232DF400539398 /* SearchNetworkManager.swift */; };
 		C445112B2A232E0400539398 /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445112A2A232E0400539398 /* SearchModel.swift */; };
 		C445112D2A232E0E00539398 /* SearchUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445112C2A232E0E00539398 /* SearchUtils.swift */; };
+		C445112F2A248E2C00539398 /* Array+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445112E2A248E2C00539398 /* Array+Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		C44511282A232DF400539398 /* SearchNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchNetworkManager.swift; sourceTree = "<group>"; };
 		C445112A2A232E0400539398 /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
 		C445112C2A232E0E00539398 /* SearchUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUtils.swift; sourceTree = "<group>"; };
+		C445112E2A248E2C00539398 /* Array+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Utils.swift"; sourceTree = "<group>"; };
 		E76F67E237EF5388EC22B695 /* Pods-iOSEngineerCodeCheck.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSEngineerCodeCheck.release.xcconfig"; path = "Target Support Files/Pods-iOSEngineerCodeCheck/Pods-iOSEngineerCodeCheck.release.xcconfig"; sourceTree = "<group>"; };
 		FFA972ABBDE7D118A524C779 /* Pods-iOSEngineerCodeCheck-iOSEngineerCodeCheckUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSEngineerCodeCheck-iOSEngineerCodeCheckUITests.release.xcconfig"; path = "Target Support Files/Pods-iOSEngineerCodeCheck-iOSEngineerCodeCheckUITests/Pods-iOSEngineerCodeCheck-iOSEngineerCodeCheckUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -197,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				C445112C2A232E0E00539398 /* SearchUtils.swift */,
+				C445112E2A248E2C00539398 /* Array+Utils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -460,6 +463,7 @@
 				BFD945DF244DC5E80012785A /* AppDelegate.swift in Sources */,
 				BFD945E1244DC5E80012785A /* SceneDelegate.swift in Sources */,
 				C445112D2A232E0E00539398 /* SearchUtils.swift in Sources */,
+				C445112F2A248E2C00539398 /* Array+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

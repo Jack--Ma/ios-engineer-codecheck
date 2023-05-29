@@ -15,11 +15,19 @@ class SearchViewController: UITableViewController {
     
     var searchWord: String?
     var listModel: SearchListModel?
-    var selectedIndex: Int?
+    var selectedIndex: Int = -1
     
     lazy var networkManager: SearchNetworkManager = {
         return SearchNetworkManager()
     }()
+    
+    private var repoModels: [SearchRepoModel] {
+        if let listModel = listModel {
+            return listModel.repoModels
+        } else {
+            return []
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,12 +41,8 @@ class SearchViewController: UITableViewController {
         if segue.identifier == "Detail"{
             // Setup search detail vc
             if let searchDetailVC = segue.destination as? SearchDetailViewController {
-                // Add array out-of-bounds protection
-                guard let repoModels = listModel?.repoModels else { return }
-                if let selectedIndex = selectedIndex, selectedIndex >= 0, selectedIndex < repoModels.count {
-                    let selectedRepoModel = repoModels[selectedIndex]
-                    searchDetailVC.repoModel = selectedRepoModel
-                }
+                let selectedRepoModel = repoModels.safeObject(at: selectedIndex)
+                searchDetailVC.repoModel = selectedRepoModel
             }
         }
     }
@@ -56,8 +60,8 @@ extension SearchViewController: UISearchBarDelegate {
         // Clear data when search word is empty
         if searchText.isEmpty {
             // Avoid repeated reload
-            if let repoModels = self.listModel?.repoModels, !repoModels.isEmpty {
-                self.listModel = nil
+            if !repoModels.isEmpty {
+                listModel = nil
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
@@ -90,13 +94,13 @@ extension SearchViewController: UISearchBarDelegate {
 // MARK: UITableView
 extension SearchViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return listModel?.repoModels.count ?? 0
+        return repoModels.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Refresh tableView cell
         let cell = UITableViewCell()
-        if let repoModel = listModel?.repoModels[indexPath.row] {
+        if let repoModel = repoModels.safeObject(at: indexPath.row) {
             cell.textLabel?.text = repoModel.fullName
             cell.detailTextLabel?.text = repoModel.language
         }

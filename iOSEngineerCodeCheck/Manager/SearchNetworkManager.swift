@@ -16,6 +16,7 @@ class SearchNetworkManager {
                                   completionHandler: @escaping (SearchListModel?, AFError?) -> Void) {
         guard let searchWord = searchWord, searchWord.count != 0 else { return }
         guard let searchRequestURL = SearchUtils.searchRequestURL else { return }
+        self.cancelRequest()
         
         let param: [String:String] = ["q":searchWord]
         
