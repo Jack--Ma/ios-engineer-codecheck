@@ -25,6 +25,8 @@ class SearchDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.title = "Repo Detail"
+        
         guard let repo = repoModel else { return }
         
         // Setup label

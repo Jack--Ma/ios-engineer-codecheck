@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 /// User could search github repo name and get result in this page
 class SearchViewController: UITableViewController {
@@ -31,6 +32,8 @@ class SearchViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.title = "Repo Search"
         
         // Setup searchBar
         searchBar.placeholder = "GitHubのリポジトリを検索できるよー"
@@ -70,14 +73,21 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        // TODO: Add no network toast
+        // Network reachability check
+        if NetworkReachabilityManager()?.isReachable == false {
+            Toast.show("Network not connected!", inView: self.view)
+            return
+        }
+        if searchWord == searchBar.text {
+            return
+        }
         // Begin search request after user click search button
         searchWord = searchBar.text
         weak var weakSelf = self
         networkManager.requestSearchList(searchWord) { listModel, error in
             guard let weakSelf = weakSelf else { return }
             if let error = error {
-                // TODO: Add error toast
+                Toast.show("Search Failed!", inView: self.view)
                 // Monitor request error
                 assert(false, "Request search list failed, error: \(error)")
             } else {
@@ -92,20 +102,24 @@ extension SearchViewController: UISearchBarDelegate {
 }
 
 // MARK: UITableView
+let cellIdentifier: String = "cellIdentifier"
 extension SearchViewController {
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return repoModels.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Refresh tableView cell
-        let cell = UITableViewCell()
-        if let repoModel = repoModels.safeObject(at: indexPath.row) {
-            cell.textLabel?.text = repoModel.fullName
-            cell.detailTextLabel?.text = repoModel.language
+        var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
+        if cell == nil {
+            cell = UITableViewCell(style: .value1, reuseIdentifier: cellIdentifier)
         }
-        cell.tag = indexPath.row
-        return cell
+        if let repoModel = repoModels.safeObject(at: indexPath.row) {
+            cell?.textLabel?.text = repoModel.fullName
+            cell?.detailTextLabel?.text = repoModel.language
+        }
+        return cell ?? UITableViewCell()
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
