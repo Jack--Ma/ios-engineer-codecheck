@@ -691,14 +691,15 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = S7G9J68NLX;
+				DEVELOPMENT_TEAM = 2658KK4JZ7;
+				GCC_GENERATE_TEST_COVERAGE_FILES = NO;
 				INFOPLIST_FILE = iOSEngineerCodeCheckTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jp.yumemi.iOSEngineerCodeCheckTests;
+				PRODUCT_BUNDLE_IDENTIFIER = jackma.iOSEngineerCodeCheckTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -713,14 +714,15 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = S7G9J68NLX;
+				DEVELOPMENT_TEAM = 2658KK4JZ7;
+				GCC_GENERATE_TEST_COVERAGE_FILES = NO;
 				INFOPLIST_FILE = iOSEngineerCodeCheckTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jp.yumemi.iOSEngineerCodeCheckTests;
+				PRODUCT_BUNDLE_IDENTIFIER = jackma.iOSEngineerCodeCheckTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -734,14 +736,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = S7G9J68NLX;
+				DEVELOPMENT_TEAM = 2658KK4JZ7;
 				INFOPLIST_FILE = iOSEngineerCodeCheckUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jp.yumemi.iOSEngineerCodeCheckUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = jackma.iOSEngineerCodeCheckUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -755,14 +757,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = S7G9J68NLX;
+				DEVELOPMENT_TEAM = 2658KK4JZ7;
 				INFOPLIST_FILE = iOSEngineerCodeCheckUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jp.yumemi.iOSEngineerCodeCheckUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = jackma.iOSEngineerCodeCheckUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
