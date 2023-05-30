@@ -25,7 +25,7 @@ Finish
 
 ## プログラム構造をリファクタリング
 
-TBD
+Finish
 
 ## アーキテクチャを適用
 
@@ -33,12 +33,12 @@ Finish
 
 ## テストを追加
 
-TBD
+Finish
 
 ## UI をブラッシュアップ
 
-TBD
+Finish
 
 ## 新機能を追加
 
-TBD
+In Progress
